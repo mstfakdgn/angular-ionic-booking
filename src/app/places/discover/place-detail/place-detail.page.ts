@@ -35,10 +35,22 @@ export class PlaceDetailPage implements OnInit {
     // this.navCtrl.navigateBack('/places/tabs/discover');
     // pops the last page from stack
     // this.navCtrl.pop();
-    this.modalCtrl.create({component: CreateBookingComponent}).then(modalEl => {
+    this.modalCtrl
+    .create({component: CreateBookingComponent,
+      componentProps: { selectedPlace: this.place}
+    })
+    .then(modalEl => {
       modalEl.present();
+      return modalEl.onDidDismiss();
+    })
+    .then(resultData => {
+      console.log(resultData.data, resultData.role);
+      if (resultData.role === 'confirm') {
+        console.log('booked');
+      } else {
+        console.log('cancel');
+      }
     });
-
 
   }
 
