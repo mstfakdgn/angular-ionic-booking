@@ -21,7 +21,7 @@
           </ion-card-header>
           <ion-img [src]="loadedPlaces[0].imageUrl"></ion-img>
           <ion-card-content>
-            <p>{{ loadedPlaces[0].description }}</p>
+            <p><ion-text color="danger">{{ loadedPlaces[0].description }}</ion-text></p>
           </ion-card-content>
           <div>
             <ion-button 
@@ -47,7 +47,7 @@
             </ion-thumbnail>
             <ion-label>
               <h2>{{ place.title }}</h2>
-              <p>{{ place.description }}</p>
+              <p><ion-text color="danger">{{ place.description }}</ion-text></p>
             </ion-label>
           </ion-item>
         </ion-list>
