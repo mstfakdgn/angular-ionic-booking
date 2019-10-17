@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Offer } from './offer.model';
 import { BehaviorSubject } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { take, map, tap, delay } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -39,9 +39,29 @@ export class OffersService {
       dateTo,
       this.authService.userId
       );
-    this._offers.pipe(take(1)).subscribe(offers => {
-      this._offers.next(offers.concat(newOffer));
-    });
+    return this._offers.pipe(take(1), delay(1000), tap(offers => {
+      setTimeout(() => {
+        this._offers.next(offers.concat(newOffer));
+      }, 1000);
+    }));
+  }
+  updateOffer(title: string, desc: string, offerId: string) {
+    return this.offers.pipe(take(1), delay(1000), tap(offers => {
+      const updatedOfferIndex = offers.findIndex(of => of.id === offerId);
+      const updatedOffers = [...offers];
+      const oldOffer = updatedOffers[updatedOfferIndex];
+      updatedOffers[updatedOfferIndex] = new Offer(
+        oldOffer.id,
+        title,
+        desc,
+        oldOffer.imageUrl,
+        oldOffer.price,
+        oldOffer.avaliableFrom,
+        oldOffer.avaliableTo,
+        oldOffer.userId
+      );
+      this._offers.next(updatedOffers);
+    }));
   }
 
 }
