@@ -14,7 +14,7 @@ export class CreateBookingComponent implements OnInit {
   @ViewChild('f', {static: false}) form: NgForm;
   startDate: string;
   endDate: string;
-
+  errorMessage: string;
   constructor(private modalCtrl: ModalController) { }
 
   ngOnInit() {
@@ -31,8 +31,8 @@ export class CreateBookingComponent implements OnInit {
   }
   // second part is roles can be anything we want
   onBookPlace() {
-    if (!this.form.valid || !this.datesValid) {
-      return;
+    if (!this.form.valid || !this.datesValid()) {
+      return this.errorMessage =  'gidiş gelişden önce olamaz dangalak düzelt!';
     }
     this.modalCtrl.dismiss({bookingData: {
       firstName: this.form.value['first-name'],
@@ -51,6 +51,7 @@ export class CreateBookingComponent implements OnInit {
   datesValid() {
       const startDate = this.form.value['date-from'];
       const endDate = this.form.value['date-to'];
+
       return endDate > startDate ;
   }
 }

@@ -62,7 +62,12 @@
       </ion-row>
       <ion-row size-sm="6" offset-sm="3">
         <ion-col>
-          <ion-button color="primary" type="submit" expand="block" [disabled]="!f.valid || !datesValid()">Book</ion-button>
+          <ion-button color="primary" type="submit" expand="block" [disabled]="!f.valid">Book</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row size-sm="6" offset-sm="3">
+        <ion-col>
+          <ion-text color="primary" type="submit" expand="block" *ngIf="errorMessage">{{ errorMessage }}</ion-text>
         </ion-col>
       </ion-row>
     </ion-grid>
