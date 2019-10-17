@@ -14,6 +14,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
   loadedPlaces: Place[];
   listedLoadedPlaces: Place[];
   private placesSub: Subscription;
+  private placesSub1: Subscription;
 
   constructor(
     private placesService: PlacesService,
@@ -24,7 +25,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
     this.placesSub = this.placesService.places.subscribe(places => {
       this.listedLoadedPlaces = places.slice(1);
     });
-    this.placesSub = this.placesService.places.subscribe(places => {
+    this.placesSub1 = this.placesService.places.subscribe(places => {
       this.loadedPlaces = places;
     });
   }
@@ -38,6 +39,9 @@ export class DiscoverPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.placesSub) {
       this.placesSub.unsubscribe();
+    }
+    if (this.placesSub1) {
+      this.placesSub1.unsubscribe();
     }
   }
 }

@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { Offer } from './offer.model';
 import { BehaviorSubject } from 'rxjs';
 import { take, map } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OffersService {
+  constructor(private authService: AuthService) { }
+
   private _offers = new BehaviorSubject<Offer[]>([
       // tslint:disable-next-line: max-line-length
       new Offer('p3', 'Alabama', 'In the heart of Teksas', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
@@ -25,6 +28,20 @@ export class OffersService {
       return {...offer.find(p => p.id === id) };
     }));
   }
+  addOffer(title: string, desc: string, price: number, dateFrom: Date, dateTo: Date) {
+    const newOffer = new Offer(
+      Math.random().toString(),
+      title,
+      desc,
+      'https://image.shutterstock.com/image-photo/amazing-fantastic-background-extraterrestrial-aliens-260nw-718238302.jpg',
+      price,
+      dateFrom,
+      dateTo,
+      this.authService.userId
+      );
+    this._offers.pipe(take(1)).subscribe(offers => {
+      this._offers.next(offers.concat(newOffer));
+    });
+  }
 
-  constructor() { }
 }
