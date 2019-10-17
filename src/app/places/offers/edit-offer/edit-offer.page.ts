@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OffersService } from '../../offers.service';
 import { NavController } from '@ionic/angular';
 import { Offer } from '../../offer.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-offer',
   templateUrl: './edit-offer.page.html',
   styleUrls: ['./edit-offer.page.scss'],
 })
-export class EditOfferPage implements OnInit {
+export class EditOfferPage implements OnInit, OnDestroy {
   offer: Offer;
   form: FormGroup;
+  offerSub: Subscription;
 
   constructor(private route: ActivatedRoute, private offerService: OffersService, private navCtrl: NavController) { }
 
@@ -22,7 +24,9 @@ export class EditOfferPage implements OnInit {
         this.navCtrl.navigateBack('/places/tabs/offers');
         return;
       }
-      this.offer = this.offerService.getOffer(paramMap.get('placeId'));
+      this.offerSub = this.offerService.getOffer(paramMap.get('placeId')).subscribe(offer => {
+        this.offer = offer;
+      });
       this.form = new FormGroup({
         title: new FormControl(this.offer.title, {
           updateOn: 'blur',
@@ -44,4 +48,9 @@ export class EditOfferPage implements OnInit {
     console.log(this.form);
   }
 
+  ngOnDestroy() {
+    if (this.offerSub) {
+      this.offerSub.unsubscribe();
+    }
+  }
 }
