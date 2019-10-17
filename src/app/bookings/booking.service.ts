@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Booking } from './booking.model';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { take, tap, delay } from 'rxjs/operators';
+import { take, tap, delay, concat } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +44,12 @@ export class BookingService {
     );
     return this.bookings.pipe(take(1), delay(1000), tap(bookings => {
       this._bookings.next(bookings.concat(newBooking));
+    }));
+  }
+
+  cancelBookings(bookingId: string) {
+    return this.bookings.pipe(take(1), delay(1000), tap(bookings => {
+      this._bookings.next(bookings.filter(b => b.id !== bookingId));
     }));
   }
 }
