@@ -15,6 +15,10 @@ export class PlacesService {
     new Place('p2', 'Washington Dc', 'In the heart of washington', 'https://i0.wp.com/www.aramamotoru.com/wp-content/uploads/2017/10/blog-yazilarinda-gorseller-nasil-secilmeli.jpg?fit=1150%2C500&ssl=1', 140.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
     // tslint:disable-next-line: max-line-length
     new Place('p3', 'Alabama', 'In the heart of Teksas', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
+    // tslint:disable-next-line: max-line-length
+    new Place('p4', 'Another User', 'Another User', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'hjk'),
+    // tslint:disable-next-line: max-line-length
+    new Place('p5', 'Another User', 'Another User', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'işl'),
   ]);
   constructor(private authService: AuthService) { }
 
