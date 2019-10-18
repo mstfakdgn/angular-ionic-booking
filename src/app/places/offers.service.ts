@@ -92,22 +92,45 @@ export class OffersService {
     // }));
   }
   updateOffer(title: string, desc: string, offerId: string) {
-    return this.offers.pipe(take(1), delay(1000), tap(offers => {
-      const updatedOfferIndex = offers.findIndex(of => of.id === offerId);
-      const updatedOffers = [...offers];
-      const oldOffer = updatedOffers[updatedOfferIndex];
-      updatedOffers[updatedOfferIndex] = new Offer(
-        oldOffer.id,
-        title,
-        desc,
-        oldOffer.imageUrl,
-        oldOffer.price,
-        oldOffer.avaliableFrom,
-        oldOffer.avaliableTo,
-        oldOffer.userId
-      );
-      this._offers.next(updatedOffers);
-    }));
+    let updatedOffers: Place[];
+    return this.offers.pipe(
+      take(1), switchMap(offers => {
+        const updatedOfferIndex = offers.findIndex(of => of.id === offerId);
+        updatedOffers = [...offers];
+        const oldOffer = updatedOffers[updatedOfferIndex];
+        updatedOffers[updatedOfferIndex] = new Offer(
+          oldOffer.id,
+          title,
+          desc,
+          oldOffer.imageUrl,
+          oldOffer.price,
+          oldOffer.avaliableFrom,
+          oldOffer.avaliableTo,
+          oldOffer.userId
+        );
+        return this.http.put(
+          `https://ionic-angular-978a3.firebaseio.com/offered-places/${offerId}.json`,
+          {...updatedOffers[updatedOfferIndex], id: null}
+        );
+      }), tap(() => {
+        this._offers.next(updatedOffers);
+      }));
+    // return this.offers.pipe(take(1), tap(offers => {
+    //   const updatedOfferIndex = offers.findIndex(of => of.id === offerId);
+    //   const updatedOffers = [...offers];
+    //   const oldOffer = updatedOffers[updatedOfferIndex];
+    //   updatedOffers[updatedOfferIndex] = new Offer(
+    //     oldOffer.id,
+    //     title,
+    //     desc,
+    //     oldOffer.imageUrl,
+    //     oldOffer.price,
+    //     oldOffer.avaliableFrom,
+    //     oldOffer.avaliableTo,
+    //     oldOffer.userId
+    //   );
+    //   this._offers.next(updatedOffers);
+    // }));
   }
 
 }
