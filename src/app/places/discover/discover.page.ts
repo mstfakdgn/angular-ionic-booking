@@ -4,7 +4,8 @@ import { Place } from '../place.model';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, IonItemSliding } from '@ionic/angular';
+import { Router } from '@angular/router';
 // import { MenuController } from '@ionic/angular';
 
 @Component({
@@ -21,7 +22,8 @@ export class DiscoverPage implements OnInit, OnDestroy {
   constructor(
     private placesService: PlacesService,
     private authService: AuthService,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private router: Router
     // private menuController: MenuController
   ) { }
 
@@ -54,10 +56,11 @@ export class DiscoverPage implements OnInit, OnDestroy {
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
     }
   }
-  // Opens the menu programatically
-  // onOpenMenu() {
-  //   this.menuController.toggle();
-  // }
+  onEdit(placeId: string, slidingItem: IonItemSliding) {
+    slidingItem.close();
+    this.router.navigate(['/', 'places', 'tabs', 'discover', 'edit', placeId]);
+  }
+
   ngOnDestroy() {
     if (this.placesSub) {
       this.placesSub.unsubscribe();

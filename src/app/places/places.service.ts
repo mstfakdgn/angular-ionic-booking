@@ -91,4 +91,29 @@ export class PlacesService {
     // }));
       // console.log(this._places);
   }
+  updatePlace(title: string, desc: string, placeId: string) {
+    let updatedPlaces: Place[];
+    return this.places.pipe(
+      take(1), switchMap(places => {
+        const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
+        updatedPlaces = [...places];
+        const oldPlace = updatedPlaces[updatedPlaceIndex];
+        updatedPlaces[updatedPlaceIndex] = new Place(
+          oldPlace.id,
+          title,
+          desc,
+          oldPlace.imageUrl,
+          oldPlace.price,
+          oldPlace.avaliableFrom,
+          oldPlace.avaliableTo,
+          oldPlace.userId
+        );
+        return this.http.put(
+          `https://ionic-angular-978a3.firebaseio.com/offered-places2/${placeId}.json`,
+          {...updatedPlaces[updatedPlaceIndex], id: null}
+        );
+      }), tap(() => {
+        this._places.next(updatedPlaces);
+      }));
+  }
 }

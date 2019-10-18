@@ -17,6 +17,10 @@ const routes: Routes = [
                     loadChildren: './discover/new-place/new-place.module#NewPlacePageModule'
                 },
                 {
+                    path: 'edit/:placeId',
+                    loadChildren: './discover/edit-place/edit-place.module#EditPlacePageModule'
+                },
+                {
                     path: ':placeId',
                     loadChildren: './discover/place-detail/place-detail.module#PlaceDetailPageModule'
                 }
@@ -51,6 +55,7 @@ const routes: Routes = [
         redirectTo: '/places/tabs/discover',
         pathMatch: 'full',
     },
+  { path: 'edit-place', loadChildren: './discover/edit-place/edit-place.module#EditPlacePageModule' },
 ];
 
 @NgModule({
