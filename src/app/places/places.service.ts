@@ -3,6 +3,7 @@ import { Place } from './place.model';
 import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { take, map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class PlacesService {
     // tslint:disable-next-line: max-line-length
     new Place('p5', 'Another User', 'Another User', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'işl'),
   ]);
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private http: HttpClient) { }
 
   get places() {
     return this._places.asObservable();

@@ -60,7 +60,7 @@ export class NewOfferPage implements OnInit {
         new Date(this.form.value.dateFrom),
         new Date(this.form.value.dateTo)
       ).subscribe(() => {
-        console.log('added places also bitch');
+        console.log('added places also');
       });
       this.offerService.addOffer(
         this.form.value.title,

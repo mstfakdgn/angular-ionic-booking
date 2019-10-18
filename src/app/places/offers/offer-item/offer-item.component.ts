@@ -11,7 +11,8 @@ export class OfferItemComponent implements OnInit {
   @Input() loadedOffer: Offer;
   constructor(private offerService: OffersService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 
 }

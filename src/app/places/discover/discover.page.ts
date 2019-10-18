@@ -49,8 +49,5 @@ export class DiscoverPage implements OnInit, OnDestroy {
     if (this.placesSub) {
       this.placesSub.unsubscribe();
     }
-    if (this.placesSub1) {
-      this.placesSub1.unsubscribe();
-    }
   }
 }

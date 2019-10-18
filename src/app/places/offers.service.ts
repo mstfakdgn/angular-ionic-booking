@@ -1,26 +1,58 @@
 import { Injectable } from '@angular/core';
 import { Offer } from './offer.model';
 import { BehaviorSubject } from 'rxjs';
-import { take, map, tap, delay } from 'rxjs/operators';
+import { take, map, tap, delay, switchMap, isEmpty } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { Place } from './place.model';
+
+interface FetchedData {
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class OffersService {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private http: HttpClient) { }
 
-  private _offers = new BehaviorSubject<Offer[]>([
-      // tslint:disable-next-line: max-line-length
-      new Offer('p3', 'Alabama', 'In the heart of Teksas', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
-      // tslint:disable-next-line: max-line-length
-      new Offer('p1', 'Manhattan Mansion', 'In the heart of new york', 'https://previews.123rf.com/images/prometeus/prometeus1710/prometeus171000688/88190647-close-up-portrait-of-a-zombie-man-covered-with-snow-halloween-horror-film-.jpg', 150.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
-      // tslint:disable-next-line: max-line-length
-      new Offer('p2', 'Washington Dc', 'In the heart of washington', 'https://i0.wp.com/www.aramamotoru.com/wp-content/uploads/2017/10/blog-yazilarinda-gorseller-nasil-secilmeli.jpg?fit=1150%2C500&ssl=1', 140.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
-    ]); 
+  private _offers = new BehaviorSubject<Offer[]>([]);
 
   get offers() {
     return this._offers.asObservable();
+  }
+
+  fetchOffers() {
+    return this.http.get<{[key: string]: FetchedData}>('https://ionic-angular-978a3.firebaseio.com/offered-places.json')
+    .pipe(map(resData => {
+      const offers = [];
+      for (const key in resData) {
+        if (resData.hasOwnProperty(key)) {
+          offers.push(
+            new Offer(
+              key, resData[key].title,
+              resData[key].description,
+              resData[key].imageUrl,
+              resData[key].price,
+              new Date(resData[key].availableFrom),
+              new Date(resData[key].availableTo),
+              resData[key].userId
+            )
+          );
+        }
+      }
+      return offers;
+    }),
+    tap(offers => {
+      this._offers.next(offers);
+    })
+    );
   }
 
   getOffer(id: string) {
@@ -29,6 +61,7 @@ export class OffersService {
     }));
   }
   addOffer(title: string, desc: string, price: number, dateFrom: Date, dateTo: Date) {
+    let generatedId: string;
     const newOffer = new Offer(
       Math.random().toString(),
       title,
@@ -39,11 +72,24 @@ export class OffersService {
       dateTo,
       this.authService.userId
       );
-    return this._offers.pipe(take(1), delay(1000), tap(offers => {
-      setTimeout(() => {
-        this._offers.next(offers.concat(newOffer));
-      }, 1000);
-    }));
+    return this.http
+      .post<{ name: string }>('https://ionic-angular-978a3.firebaseio.com/offered-places.json', {...newOffer, id: null })
+      .pipe(
+        switchMap(resData => {
+          generatedId = resData.name;
+          return this.offers;
+        }),
+        take(1),
+        tap(offers => {
+          newOffer.id = generatedId;
+          this._offers.next(offers.concat(newOffer));
+        })
+      );
+    // return this._offers.pipe(take(1), delay(1000), tap(offers => {
+    //   setTimeout(() => {
+    //     this._offers.next(offers.concat(newOffer));
+    //   }, 1000);
+    // }));
   }
   updateOffer(title: string, desc: string, offerId: string) {
     return this.offers.pipe(take(1), delay(1000), tap(offers => {

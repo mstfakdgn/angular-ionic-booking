@@ -13,6 +13,20 @@
 </ion-header>
 
 <ion-content>
+    <ion-grid *ngIf="loadedOffers.length <= 0">
+      <ion-row>
+        <ion-col text-center>
+          <ion-text>No offers</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col text-center>
+          <ion-button color="primary" routerLink="/places/tabs/offers/new">
+            New Offer
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <ion-grid>
         <ion-row>
           <ion-col size="12" size-sm="8" offset-sm="2" text-center>
