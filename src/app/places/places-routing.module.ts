@@ -13,6 +13,10 @@ const routes: Routes = [
                     loadChildren: './discover/discover.module#DiscoverPageModule'
                 },
                 {
+                    path: 'new',
+                    loadChildren: './discover/new-place/new-place.module#NewPlacePageModule'
+                },
+                {
                     path: ':placeId',
                     loadChildren: './discover/place-detail/place-detail.module#PlaceDetailPageModule'
                 }
@@ -46,7 +50,7 @@ const routes: Routes = [
         path: '' ,
         redirectTo: '/places/tabs/discover',
         pathMatch: 'full',
-    }
+    },
 ];
 
 @NgModule({

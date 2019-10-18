@@ -4,6 +4,7 @@ import { Place } from '../place.model';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { LoadingController } from '@ionic/angular';
 // import { MenuController } from '@ionic/angular';
 
 @Component({
@@ -19,7 +20,8 @@ export class DiscoverPage implements OnInit, OnDestroy {
 
   constructor(
     private placesService: PlacesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingCtrl: LoadingController
     // private menuController: MenuController
   ) { }
 
@@ -28,6 +30,17 @@ export class DiscoverPage implements OnInit, OnDestroy {
       this.loadedPlaces = places;
       this.relevantPlaces = this.loadedPlaces;
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+    });
+  }
+
+  ionViewWillEnter() {
+    this.loadingCtrl.create({
+      message: 'Getting Places...',
+    }).then(loadingEl => {
+      loadingEl.present();
+      this.placesService.fetchPlaces().subscribe(() => {
+        loadingEl.dismiss();
+      });
     });
   }
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {

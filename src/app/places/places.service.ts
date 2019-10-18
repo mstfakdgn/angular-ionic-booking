@@ -2,25 +2,24 @@ import { Injectable } from '@angular/core';
 import { Place } from './place.model';
 import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
-import { take, map, tap } from 'rxjs/operators';
+import { take, map, tap, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+
+interface FetchedData {
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-  private _places = new BehaviorSubject<Place[]>([
-    // tslint:disable-next-line: max-line-length
-    new Place('p1', 'Manhattan Mansion', 'In the heart of new york', 'https://previews.123rf.com/images/prometeus/prometeus1710/prometeus171000688/88190647-close-up-portrait-of-a-zombie-man-covered-with-snow-halloween-horror-film-.jpg', 150.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
-    // tslint:disable-next-line: max-line-length
-    new Place('p2', 'Washington Dc', 'In the heart of washington', 'https://i0.wp.com/www.aramamotoru.com/wp-content/uploads/2017/10/blog-yazilarinda-gorseller-nasil-secilmeli.jpg?fit=1150%2C500&ssl=1', 140.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
-    // tslint:disable-next-line: max-line-length
-    new Place('p3', 'Alabama', 'In the heart of Teksas', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'abc'),
-    // tslint:disable-next-line: max-line-length
-    new Place('p4', 'Another User', 'Another User', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'hjk'),
-    // tslint:disable-next-line: max-line-length
-    new Place('p5', 'Another User', 'Another User', 'https://www.intersinema.com/haber/resimler/201907/25664_8034.jpg', 145.00, new Date('2019-01-01'), new Date('2019-12-31'), 'işl'),
-  ]);
+  private _places = new BehaviorSubject<Place[]>([]);
   constructor(private authService: AuthService, private http: HttpClient) { }
 
   get places() {
@@ -32,7 +31,36 @@ export class PlacesService {
     }));
   }
 
+  fetchPlaces() {
+    return this.http.get<{[key: string]: FetchedData}>('https://ionic-angular-978a3.firebaseio.com/offered-places2.json')
+    .pipe(map(resData => {
+      const places = [];
+      for (const key in resData ) {
+        if (resData.hasOwnProperty(key)) {
+          places.push(
+            new Place(
+              key, resData[key].title,
+              resData[key].description,
+              resData[key].imageUrl,
+              resData[key].price,
+              new Date(resData[key].availableFrom),
+              new Date(resData[key].availableTo),
+              resData[key].userId
+            )
+          );
+        }
+      }
+      console.log(places);
+      return places;
+    }),
+    tap(places => {
+      this._places.next(places);
+    })
+    );
+  }
+
   addPlace( title: string, desc: string, price: number, dateFrom: Date, dateTo: Date ) {
+    let generatedId: string;
     const newPlace = new Place(
       Math.random().toString(),
       title,
@@ -43,11 +71,24 @@ export class PlacesService {
       dateTo,
       this.authService.userId
       );
-    return this._places.pipe(take(1), tap(places => {
-      setTimeout(() => {
-        this._places.next(places.concat(newPlace));
-      }, 1000);
-    }));
+    return this.http
+      .post('https://ionic-angular-978a3.firebaseio.com/offered-places2.json', {...newPlace, id: null })
+      .pipe(
+        switchMap(resData => {
+          generatedId = resData.name;
+          return this.places;
+        }),
+        take(1),
+        tap(places => {
+          newPlace.id = generatedId;
+          this._places.next(places.concat(newPlace));
+        })
+      );
+    // return this._places.pipe(take(1), tap(places => {
+    //   setTimeout(() => {
+    //     this._places.next(places.concat(newPlace));
+    //   }, 1000);
+    // }));
       // console.log(this._places);
   }
 }
