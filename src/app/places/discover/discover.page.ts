@@ -61,6 +61,10 @@ export class DiscoverPage implements OnInit, OnDestroy {
     this.router.navigate(['/', 'places', 'tabs', 'discover', 'edit', placeId]);
   }
 
+  onDetail(placeId: string) {
+    this.router.navigate(['/', 'places', 'tabs', 'discover', placeId]);
+  }
+
   ngOnDestroy() {
     if (this.placesSub) {
       this.placesSub.unsubscribe();

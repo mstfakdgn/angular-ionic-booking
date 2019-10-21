@@ -17,6 +17,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
   place: Place;
   isBookable = true;
   private placesSub: Subscription;
+  isLoading = false;
   constructor(
     // private router: Router,
     private navCtrl: NavController,
@@ -36,10 +37,11 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         this.navCtrl.navigateBack('/places/tabs/discover');
         return;
       }
+      this.isLoading = true;
       this.placesSub = this.placeService.getPlace(paramMap.get('placeId')).subscribe(place => {
         this.place = place;
         this.isBookable = place.userId !== this.authService.userId;
-        console.log(this.isBookable);
+        this.isLoading = false;
       });
     });
   }

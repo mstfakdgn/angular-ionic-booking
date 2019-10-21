@@ -3,26 +3,33 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/places/tabs/discover"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ place.title }}</ion-title>
+    <ion-title *ngIf="!isLoading">{{ place.title }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid no-padding>
-    <ion-row>
-      <ion-col no-padding>
-        <ion-img [src]="place.imageUrl"></ion-img>
-      </ion-col>
-    </ion-row>
-    <ion-row col-sm="6" offset="3">
+    <ion-row *ngIf="isLoading">
       <ion-col>
-        <p>{{ place.description }}</p>
+        <ion-spinner></ion-spinner>
       </ion-col>
     </ion-row>
-    <ion-row col-sm="6" offset="3" text-center *ngIf="isBookable">
-      <ion-col>
-        <ion-button color="primary" margin (click)="onBookPlace()">Book</ion-button>
-      </ion-col>
-    </ion-row>
+    <div *ngIf="!isLoading">
+      <ion-row>
+        <ion-col no-padding>
+          <ion-img [src]="place.imageUrl"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row col-sm="6" offset="3">
+        <ion-col>
+          <p>{{ place.description }}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row col-sm="6" offset="3" text-center *ngIf="isBookable">
+        <ion-col>
+          <ion-button color="primary" margin (click)="onBookPlace()">Book</ion-button>
+        </ion-col>
+      </ion-row>
+    </div>
   </ion-grid>
 </ion-content>

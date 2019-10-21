@@ -56,9 +56,25 @@ export class OffersService {
   }
 
   getOffer(id: string) {
-    return this.offers.pipe(take(1), map(offer => {
-      return {...offer.find(p => p.id === id) };
-    }));
+    // return this.offers.pipe(take(1), map(offer => {
+    //   return {...offer.find(p => p.id === id) };
+    // }));
+    return this.http
+    .get<FetchedData>(`https://ionic-angular-978a3.firebaseio.com/offered-places/${id}.json`)
+    .pipe(
+      map(offerData => {
+        return new Place(
+          id,
+          offerData.title,
+          offerData.description,
+          offerData.imageUrl,
+          offerData.price,
+          new Date(offerData.availableFrom),
+          new Date(offerData.availableTo),
+          offerData.userId
+        );
+      })
+    );
   }
   addOffer(title: string, desc: string, price: number, dateFrom: Date, dateTo: Date) {
     let generatedId: string;
