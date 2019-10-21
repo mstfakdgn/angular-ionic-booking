@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Offer } from './offer.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap, isEmpty } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
@@ -111,7 +111,13 @@ export class OffersService {
     let updatedOffers: Place[];
     return this.offers.pipe(
       take(1), switchMap(offers => {
-        const updatedOfferIndex = offers.findIndex(of => of.id === offerId);
+        if (!offers || offers.length <= 0) {
+          return this.fetchOffers();
+        } else {
+          return of(offers);
+        }
+      }), switchMap(offers => {
+        const updatedOfferIndex = offers.findIndex(off => off.id === offerId);
         updatedOffers = [...offers];
         const oldOffer = updatedOffers[updatedOfferIndex];
         updatedOffers[updatedOfferIndex] = new Offer(
@@ -128,7 +134,8 @@ export class OffersService {
           `https://ionic-angular-978a3.firebaseio.com/offered-places/${offerId}.json`,
           {...updatedOffers[updatedOfferIndex], id: null}
         );
-      }), tap(() => {
+      })
+      , tap(() => {
         this._offers.next(updatedOffers);
       }));
     // return this.offers.pipe(take(1), tap(offers => {
