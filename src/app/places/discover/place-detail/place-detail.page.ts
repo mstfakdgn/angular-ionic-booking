@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NavController, ModalController, ActionSheetController, LoadingController } from '@ionic/angular';
+import { NavController, ModalController, ActionSheetController, LoadingController, AlertController } from '@ionic/angular';
 import { PlacesService } from '../../places.service';
 import { Place } from '../../place.model';
 import { CreateBookingComponent } from '../../../bookings/create-booking/create-booking.component';
 import { Subscription } from 'rxjs';
 import { BookingService } from 'src/app/bookings/booking.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { alertController } from '@ionic/core';
 
 @Component({
   selector: 'app-place-detail',
@@ -28,7 +29,8 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private loadingCtrl: LoadingController,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertCtrl: AlertController
     ) { }
 
   ngOnInit() {
@@ -42,6 +44,16 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         this.place = place;
         this.isBookable = place.userId !== this.authService.userId;
         this.isLoading = false;
+      }, error => {
+        this.alertCtrl.create({
+          header: 'An error occured',
+          message: 'Place could not be fetched. Please try again later.',
+          buttons: [{ text: 'Okay', handler: () => {
+            this.router.navigate(['/places/tabs/discover']);
+          }}]
+        }).then(alertEl => {
+          alertEl.present();
+        });
       });
     });
   }
@@ -85,7 +97,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
     .then(resultData => {
       if (resultData.role === 'confirm') {
         this.loadingCtrl.create({
-          message: 'Booing',
+          message: 'Booking',
         }).then(loadingEl => {
           loadingEl.present();
           const data = resultData.data.bookingData;
@@ -96,8 +108,8 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
             data.firtsName,
             data.lastName,
             data.guestNumber,
-            data.startDate,
-            data.endDate,
+            new Date(data.startDate),
+            new Date(data.endDate),
             ).subscribe(() => {
               loadingEl.dismiss();
             });
