@@ -29,7 +29,7 @@ export class BookingsPage implements OnInit, OnDestroy {
       message: 'Getting Booked Places...',
     }).then(loadingEl => {
       loadingEl.present();
-      this.bookingService.fetchBookings().subscribe(places => {
+      this.bookingService.fetchBookings().subscribe(() => {
         loadingEl.dismiss();
       });
     });

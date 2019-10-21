@@ -36,12 +36,12 @@ export class BookingService {
   }
 
   fetchBookings() {
-    return this.http.get<{[key: string]: FetchedBooking}>('https://ionic-angular-978a3.firebaseio.com/booked.json')
+    return this.http.get<{[key: string]: FetchedBooking}>
+      ('https://ionic-angular-978a3.firebaseio.com/booked.json')
       .pipe(map(resData => {
         const bookedPlaces = [];
         for (const key in resData) {
           if (resData.hasOwnProperty(key)) {
-            console.log(resData[key]);
             bookedPlaces.push(
               new Booking(
                 key,
@@ -52,8 +52,8 @@ export class BookingService {
                 resData[key].firstName,
                 resData[key].lastName,
                 resData[key].guestNumber,
-                resData[key].bookedFrom,
-                resData[key].bookedTo,
+                new Date(resData[key].bookedFrom),
+                new Date(resData[key].bookedTo),
               )
             );
           }
@@ -108,8 +108,18 @@ export class BookingService {
   }
 
   cancelBookings(bookingId: string) {
-    return this.bookings.pipe(take(1), delay(1000), tap(bookings => {
+    return this.http
+    .delete(`https://ionic-angular-978a3.firebaseio.com/booked/${bookingId}.json`)
+    .pipe(switchMap(() => {
+      return this.bookings;
+
+    }),
+    take(1),
+    tap(bookings => {
       this._bookings.next(bookings.filter(b => b.id !== bookingId));
     }));
+    // return this.bookings.pipe(take(1), delay(1000), tap(bookings => {
+    //   this._bookings.next(bookings.filter(b => b.id !== bookingId));
+    // }));
   }
 }
