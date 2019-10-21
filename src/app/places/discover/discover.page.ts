@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { LoadingController, IonItemSliding } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 // import { MenuController } from '@ionic/angular';
 
 @Component({
@@ -18,12 +19,15 @@ export class DiscoverPage implements OnInit, OnDestroy {
   listedLoadedPlaces: Place[];
   relevantPlaces: Place[];
   private placesSub: Subscription;
+  avaliableFrom: string;
+  avaliableTo: string;
 
   constructor(
     private placesService: PlacesService,
     private authService: AuthService,
     private loadingCtrl: LoadingController,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe
     // private menuController: MenuController
   ) { }
 
@@ -32,6 +36,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
       this.loadedPlaces = places;
       this.relevantPlaces = this.loadedPlaces;
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);
+
     });
   }
 
@@ -40,7 +45,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
       message: 'Getting Places...',
     }).then(loadingEl => {
       loadingEl.present();
-      this.placesService.fetchPlaces().subscribe(() => {
+      this.placesService.fetchPlaces().subscribe(places => {
         loadingEl.dismiss();
       });
     });

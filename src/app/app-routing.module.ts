@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
+import { DatePipe } from '@angular/common';
 
 const routes: Routes = [
   { path: '', redirectTo: 'places', pathMatch: 'full' },
@@ -14,6 +15,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [DatePipe]
 })
 export class AppRoutingModule { }

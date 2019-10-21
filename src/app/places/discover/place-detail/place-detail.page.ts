@@ -19,6 +19,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
   isBookable = true;
   private placesSub: Subscription;
   isLoading = false;
+
   constructor(
     // private router: Router,
     private navCtrl: NavController,

@@ -6,8 +6,8 @@ import { take, map, tap, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 interface FetchedData {
-  availableFrom: string;
-  availableTo: string;
+  avaliableFrom: string;
+  avaliableTo: string;
   description: string;
   imageUrl: string;
   price: number;
@@ -39,8 +39,8 @@ export class PlacesService {
           placeData.description,
           placeData.imageUrl,
           placeData.price,
-          new Date(placeData.availableFrom),
-          new Date(placeData.availableTo),
+          new Date(placeData.avaliableFrom),
+          new Date(placeData.avaliableFrom),
           placeData.userId
         );
       })
