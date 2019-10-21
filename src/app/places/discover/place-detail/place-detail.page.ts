@@ -106,7 +106,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
             this.place.id,
             this.place.title,
             this.place.imageUrl,
-            data.firtsName,
+            data.firstName,
             data.lastName,
             data.guestNumber,
             new Date(data.startDate),

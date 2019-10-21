@@ -34,7 +34,6 @@ export class OffersService {
       const offers = [];
       for (const key in resData) {
         if (resData.hasOwnProperty(key)) {
-          console.log(resData[key].avaliableFrom);
           offers.push(
             new Offer(
               key, resData[key].title,
