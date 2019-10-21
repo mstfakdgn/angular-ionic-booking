@@ -33,6 +33,7 @@ export class PlacesService {
     .get<FetchedData>(`https://ionic-angular-978a3.firebaseio.com/offered-places2/${id}.json`)
     .pipe(
       map(placeData => {
+        // console.log(new Date(placeData.avaliableFrom));
         return new Place(
           id,
           placeData.title,
@@ -40,7 +41,7 @@ export class PlacesService {
           placeData.imageUrl,
           placeData.price,
           new Date(placeData.avaliableFrom),
-          new Date(placeData.avaliableFrom),
+          new Date(placeData.avaliableTo),
           placeData.userId
         );
       })
@@ -59,8 +60,8 @@ export class PlacesService {
               resData[key].description,
               resData[key].imageUrl,
               resData[key].price,
-              new Date(resData[key].availableFrom),
-              new Date(resData[key].availableTo),
+              new Date(resData[key].avaliableFrom),
+              new Date(resData[key].avaliableFrom),
               resData[key].userId
             )
           );
@@ -90,7 +91,6 @@ export class PlacesService {
       .post('https://ionic-angular-978a3.firebaseio.com/offered-places2.json', {...newPlace, id: null })
       .pipe(
         switchMap(resData => {
-          console.log(resData);
           // generatedId = resData.name;
           return this.places;
         }),

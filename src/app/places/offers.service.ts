@@ -7,8 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { Place } from './place.model';
 
 interface FetchedData {
-  availableFrom: string;
-  availableTo: string;
+  avaliableFrom: string;
+  avaliableTo: string;
   description: string;
   imageUrl: string;
   price: number;
@@ -34,14 +34,15 @@ export class OffersService {
       const offers = [];
       for (const key in resData) {
         if (resData.hasOwnProperty(key)) {
+          console.log(resData[key].avaliableFrom);
           offers.push(
             new Offer(
               key, resData[key].title,
               resData[key].description,
               resData[key].imageUrl,
               resData[key].price,
-              new Date(resData[key].availableFrom),
-              new Date(resData[key].availableTo),
+              new Date(resData[key].avaliableFrom),
+              new Date(resData[key].avaliableTo),
               resData[key].userId
             )
           );
@@ -69,8 +70,8 @@ export class OffersService {
           offerData.description,
           offerData.imageUrl,
           offerData.price,
-          new Date(offerData.availableFrom),
-          new Date(offerData.availableTo),
+          new Date(offerData.avaliableFrom),
+          new Date(offerData.avaliableTo),
           offerData.userId
         );
       })
