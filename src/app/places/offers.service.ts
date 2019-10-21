@@ -156,4 +156,16 @@ export class OffersService {
     // }));
   }
 
+  deleteOffer(offerId: string) {
+    return this.http
+      .delete(`https://ionic-angular-978a3.firebaseio.com/offered-places/${offerId}.json`)
+      .pipe(switchMap(() => {
+        return this.offers;
+      }),
+      take(1),
+      tap(offers => {
+        this._offers.next(offers.filter(b => b.id !== offerId));
+      }));
+  }
+
 }

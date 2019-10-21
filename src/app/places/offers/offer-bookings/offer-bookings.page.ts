@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Place } from '../../place.model';
-import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NavController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { OffersService } from '../../offers.service';
 
@@ -15,7 +15,13 @@ export class OfferBookingsPage implements OnInit, OnDestroy {
   private placeSub: Subscription;
   isLoading = false;
 
-  constructor(private route: ActivatedRoute, private navCtrl: NavController, private offerService: OffersService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private navCtrl: NavController,
+    private offerService: OffersService,
+    private loadingCtrl: LoadingController,
+    private router: Router
+    ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
@@ -35,6 +41,18 @@ export class OfferBookingsPage implements OnInit, OnDestroy {
     if (this.placeSub) {
       this.placeSub.unsubscribe() ;
     }
+  }
+
+  onDeleteOffer(offerId: string) {
+    this.loadingCtrl.create({
+      message: 'Offer is being Deleted!!!',
+    }).then(loadingEl => {
+      loadingEl.present();
+      this.offerService.deleteOffer(offerId).subscribe(() => {
+        loadingEl.dismiss();
+        this.router.navigate(['/places/tabs/offers']);
+      });
+    });
   }
 
 }
