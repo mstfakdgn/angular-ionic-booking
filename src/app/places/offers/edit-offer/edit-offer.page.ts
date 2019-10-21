@@ -15,7 +15,7 @@ export class EditOfferPage implements OnInit, OnDestroy {
   offer: Offer;
   form: FormGroup;
   offerSub: Subscription;
-
+  isLoading = false;
   constructor(
     private route: ActivatedRoute,
     private offerService: OffersService,
@@ -30,18 +30,20 @@ export class EditOfferPage implements OnInit, OnDestroy {
         this.navCtrl.navigateBack('/places/tabs/offers');
         return;
       }
+      this.isLoading = true;
       this.offerSub = this.offerService.getOffer(paramMap.get('placeId')).subscribe(offer => {
         this.offer = offer;
-      });
-      this.form = new FormGroup({
-        title: new FormControl(this.offer.title, {
-          updateOn: 'blur',
-          validators: [Validators.required]
-        }),
-        description: new FormControl(this.offer.description, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(180)]
-        }),
+        this.form = new FormGroup({
+          title: new FormControl(this.offer.title, {
+            updateOn: 'blur',
+            validators: [Validators.required]
+          }),
+          description: new FormControl(this.offer.description, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.maxLength(180)]
+          }),
+        });
+        this.isLoading = false;
       });
     });
 
