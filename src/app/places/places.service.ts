@@ -26,9 +26,25 @@ export class PlacesService {
     return this._places.asObservable();
   }
   getPlace(id: string) {
-    return this.places.pipe(take(1), map(places => {
-      return {...places.find(p => p.id === id) };
-    }));
+    // return this.places.pipe(take(1), map(places => {
+    //   return {...places.find(p => p.id === id) };
+    // }));
+    return this.http
+    .get<FetchedData>(`https://ionic-angular-978a3.firebaseio.com/offered-places2/${id}.json`)
+    .pipe(
+      map(placeData => {
+        return new Place(
+          id,
+          placeData.title,
+          placeData.description,
+          placeData.imageUrl,
+          placeData.price,
+          new Date(placeData.availableFrom),
+          new Date(placeData.availableTo),
+          placeData.userId
+        );
+      })
+    );
   }
 
   fetchPlaces() {
@@ -50,7 +66,6 @@ export class PlacesService {
           );
         }
       }
-      console.log(places);
       return places;
     }),
     tap(places => {
@@ -75,7 +90,8 @@ export class PlacesService {
       .post('https://ionic-angular-978a3.firebaseio.com/offered-places2.json', {...newPlace, id: null })
       .pipe(
         switchMap(resData => {
-          generatedId = resData.name;
+          console.log(resData);
+          // generatedId = resData.name;
           return this.places;
         }),
         take(1),
