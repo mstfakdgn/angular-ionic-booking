@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Place } from '../../place.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, LoadingController } from '@ionic/angular';
+import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { OffersService } from '../../offers.service';
 
@@ -20,7 +20,8 @@ export class OfferBookingsPage implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private offerService: OffersService,
     private loadingCtrl: LoadingController,
-    private router: Router
+    private router: Router,
+    private alert: AlertController
     ) { }
 
   ngOnInit() {
@@ -52,6 +53,7 @@ export class OfferBookingsPage implements OnInit, OnDestroy {
         loadingEl.dismiss();
         this.router.navigate(['/places/tabs/offers']);
       });
+      loadingEl.dismiss();
     });
   }
 

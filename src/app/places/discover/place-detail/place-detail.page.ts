@@ -122,6 +122,19 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
       }
     });
   }
+
+  onDeletePlace(placeId: string) {
+    this.loadingCtrl.create({
+      message: 'Deleting Place',
+    }).then(loadingElement => {
+      loadingElement.present();
+      this.placeService.deletePlace(placeId).subscribe(() => {
+        loadingElement.dismiss();
+        this.router.navigate(['/places/tabs/discover']);
+      });
+    });
+  }
+
   ngOnDestroy() {
     if (this.placesSub) {
       this.placesSub.unsubscribe();

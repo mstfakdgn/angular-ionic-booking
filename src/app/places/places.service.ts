@@ -132,4 +132,16 @@ export class PlacesService {
         this._places.next(updatedPlaces);
       }));
   }
+
+  deletePlace(id: string) {
+    return this.http
+    .delete(`https://ionic-angular-978a3.firebaseio.com/offered-places2/${id}.json`)
+    .pipe(switchMap(() => {
+      return this.places;
+    }),
+    take(1),
+    tap(places => {
+      this._places.next(places.filter(b => b.id !== id));
+    }));
+  }
 }

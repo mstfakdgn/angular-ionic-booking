@@ -93,7 +93,7 @@ export class BookingService {
       .post('https://ionic-angular-978a3.firebaseio.com/booked.json', {...newBooking, id: null })
       .pipe(
         switchMap(resData => {
-          generatedId = resData.name;
+          // generatedId = resData.name;
           return this.bookings;
         }),
       take(1),

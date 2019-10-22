@@ -3,6 +3,11 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/places/tabs/discover"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button icon-only (click)="onDeletePlace(place.id)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>{{ isLoading ? 'Loading...' :place.title }}</ion-title>
   </ion-toolbar>
 </ion-header>
