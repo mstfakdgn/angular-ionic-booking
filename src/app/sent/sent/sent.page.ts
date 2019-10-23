@@ -15,6 +15,7 @@ export class SentPage implements OnInit {
     if (this.route.snapshot.data['information']) {
       this.data = this.route.snapshot.data['information'];
     }
+    console.log(this.data);
   }
 
 }

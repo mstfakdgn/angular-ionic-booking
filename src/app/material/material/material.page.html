@@ -147,20 +147,20 @@
         </mat-form-field>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <section class="example-section">
-          <mat-checkbox class="example-margin" formControlName="checked">Checked</mat-checkbox>
-          <mat-checkbox class="example-margin" formControlName="indeterminate">Indeterminate</mat-checkbox>
-        </section>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="onSubmit()">Primary</button>
-      </ion-col>
-    </ion-row>
   </form>
+  <ion-row>
+    <ion-col>
+      <section class="example-section">
+        <mat-checkbox class="example-margin" [(ngModel)]="checked">Checked</mat-checkbox>
+        <mat-checkbox class="example-margin" [(ngModel)]="indeterminate">Indeterminate</mat-checkbox>
+      </section>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="onSubmit()">Primary</button>
+    </ion-col>
+  </ion-row>
 </ion-grid>
     
 </ion-content>

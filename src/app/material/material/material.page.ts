@@ -15,7 +15,14 @@ export class MaterialPage implements OnInit {
   form: FormGroup;
   checked = false;
   indeterminate = false;
-  informations = [] ;
+  informations = {
+    name: '',
+    desc: '',
+    seasons: '',
+    animals: '',
+    date: '',
+    checked: 'first' || 'second' || 'both',
+  } ;
   seasons = ['Winter', 'Summer', 'Autumn', 'Spring'];
   animals = [
     {
@@ -90,37 +97,24 @@ export class MaterialPage implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required]
       }),
-      checked : new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
-      indeterminate : new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
     });
   }
 
 
   onSubmit() {
-    // console.log(
-    //   this.form.value.name,
-    //   this.form.value.desc,
-    //   this.form.value.seasons,
-    //   this.form.value.animals,
-    //   this.form.value.date,
-    //   this.form.value.checked,
-    //   this.form.value.indeterminate
-    // );
-    this.informations.push(
-      this.form.value.name,
-      this.form.value.desc,
-      this.form.value.seasons,
-      this.form.value.animals,
-      new Date(this.form.value.date),
-      this.form.value.checked,
-      this.form.value.indeterminate
-      );
+    this.informations.name = this.form.value.name;
+    this.informations.desc = this.form.value.desc;
+    this.informations.seasons = this.form.value.seasons;
+    this.informations.animals = this.form.value.animals;
+    this.informations.date = this.form.value.date;
+
+    if (this.checked && !this.indeterminate) {
+      this.informations.checked = 'first';
+    } else if (this.indeterminate && !this.checked) {
+      this.informations.checked = 'second';
+    } else if (this.checked && this.indeterminate) {
+      this.informations.checked = 'both';
+    }
     this.saveData.setData(42, this.informations);
 
     this.router.navigateByUrl('/material/42');
